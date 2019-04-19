@@ -1,0 +1,3 @@
+/              HomeR    GET POST
+/add/#Int/#Int AddR     GET
+/pagina1       Pagina1R GET
