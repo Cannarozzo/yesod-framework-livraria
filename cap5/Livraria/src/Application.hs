@@ -8,9 +8,10 @@ module Application where
 import Foundation
 import Yesod.Core
 
+
 import Add
 import Home
-import Pagina1
 import Pagina2
+import Livro
 
 mkYesodDispatch "App" resourcesApp

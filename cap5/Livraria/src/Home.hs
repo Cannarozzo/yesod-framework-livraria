@@ -1,34 +1,47 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes       #-}
 module Home where
 
 import Foundation
 import Yesod.Core
 
-getHomeR :: Handler Html
-getHomeR = defaultLayout $ do
-    setTitle "Minimal Multifile"
-    let listaNumeros = [1..5]
-    [whamlet|
-        <p>
-            <a href=@{Pagina2R 4}> Acessar página 2
-        <p>
-            <a href=/pagina1> Acessar página 1, sem interpolador de rota
-        <p>
-            <a href=@{Pagina1R}> Acessar página 1, com interpolador de rota
-        <p>
-            <a href=@{AddR 5 7}>HTML addition
-        <p>
-            <a href=@{AddR 5 7}?_accept=application/json>JSON addition
-    |]
-    [whamlet| 
-            <h1> Links com valores a serem enviados para a página 2
-            <ul>
-            $forall numero <- listaNumeros
-                <li>
-                    <a href=@{Pagina2R numero}>
-                        Ir para página2 com o valor #{numero}
-        |]  
+data Pessoa = Pessoa {pessoaNome::String, pessoaIdade::Int} deriving Show
 
-postHomeR :: Handler Html
-postHomeR = error "rota não implementanda"
+getHomeR :: Handler Html
+getHomeR = do
+    let pessoa = Pessoa "Felipe" 33
+    let rodapeClass = "rodapeclass"
+    let corDoRodape = "red"
+    defaultLayout $ do
+         toWidget
+             [hamlet|
+                <h1> Livraria
+                <p> Iniciando o projeto da livraria com Yesod.
+                <h2> Linguagens de programação
+                <ul #livrosID name=livros >
+                    <li #javaID > Java 8
+                    <li #haskellID > Haskell
+                    <li #csID > "C#"
+                    <li #clojureID > ((Clojure))
+             |]
+         toWidget
+             [hamlet| 
+                <a href=@{HomeR}>
+                    Voltar a página inicial.
+             |]         
+         toWidget
+             [hamlet| 
+                 <footer .#{rodapeClass} onclick=emitirMensagemRodape() > Página feita por: #{pessoaNome pessoa}. #{show $ pessoaIdade pessoa} de idade.
+             |]
+         toWidget 
+            [julius| 
+                function emitirMensagemRodape(){
+                  alert("Você clicou no rodapé");  
+                };
+            |]
+         toWidget 
+            [lucius|
+                @cortitulo : green;
+                h1 { color : #{cortitulo} }
+                .#{rodapeClass} { color : #{corDoRodape} }
+            |]
+
